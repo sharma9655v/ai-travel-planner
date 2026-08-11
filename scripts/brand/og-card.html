@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #090B10;
+    color: #FFFFFF;
+    position: relative;
+  }
+  /* ambient gradients */
+  .bg { position: absolute; inset: 0; }
+  .orb-cyan {
+    position: absolute; width: 560px; height: 560px; border-radius: 50%;
+    left: -160px; top: -220px;
+    background: radial-gradient(circle, rgba(39,242,255,0.14) 0%, transparent 65%);
+    filter: blur(40px);
+  }
+  .orb-purple {
+    position: absolute; width: 620px; height: 620px; border-radius: 50%;
+    right: -180px; bottom: -260px;
+    background: radial-gradient(circle, rgba(177,109,255,0.16) 0%, transparent 65%);
+    filter: blur(40px);
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(39,242,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(39,242,255,0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .card {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 44px; padding: 0 72px;
+  }
+  .mark { width: 176px; height: 176px; flex-shrink: 0; filter: drop-shadow(0 0 34px rgba(39,242,255,0.35)); }
+  .copy { max-width: 700px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #27F2FF; margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: ''; width: 34px; height: 3px; border-radius: 2px;
+    background: linear-gradient(90deg, #27F2FF, #B16DFF);
+  }
+  h1 { font-size: 62px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px; }
+  h1 .grad { background: linear-gradient(120deg, #27F2FF 0%, #B16DFF 60%, #70E1FF 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .tag { font-size: 22px; color: #A5A5B8; line-height: 1.55; margin-bottom: 34px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chip {
+    font-size: 15px; font-weight: 600; color: #EAFDFF;
+    padding: 9px 18px; border-radius: 999px;
+    border: 1px solid rgba(39,242,255,0.28);
+    background: rgba(39,242,255,0.07);
+  }
+  .chip.p { border-color: rgba(177,109,255,0.32); background: rgba(177,109,255,0.08); color: #F3E9FF; }
+  .chip.g { border-color: rgba(61,220,132,0.3); background: rgba(61,220,132,0.08); color: #DFFFEC; }
+</style>
+</head>
+<body>
+  <div class="bg">
+    <div class="orb-cyan"></div>
+    <div class="orb-purple"></div>
+    <div class="grid"></div>
+  </div>
+  <div class="card">
+    <img class="mark" src="../public/brand-mark.svg" alt="">
+    <div class="copy">
+      <span class="eyebrow">AI Travel Planner</span>
+      <h1>Plan your next<br>adventure with <span class="grad">AI</span></h1>
+      <p class="tag">Questionnaire to a complete, day-by-day itinerary — refined with natural language, enriched with live weather, shared with one link.</p>
+      <div class="chips">
+        <span class="chip">⚡ AI Generation</span>
+        <span class="chip p">✏️ Surgical Editing</span>
+        <span class="chip g">🌤️ Live Weather</span>
+        <span class="chip">🔗 Share &amp; Revoke</span>
+        <span class="chip p">📄 PDF Report</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

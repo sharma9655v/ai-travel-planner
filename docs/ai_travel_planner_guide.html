@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Travel Planner: Comprehensive Architecture & User Guide</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 9pt;
+        color: #64748B;
+      }
+      @top-left {
+        content: "AI Travel Planner — Technical & Operational Guide";
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 8pt;
+        color: #06B6D4;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #1E293B;
+      background-color: #FFFFFF;
+      line-height: 1.6;
+      font-size: 10pt;
+    }
+
+    /* Cover Page */
+    .cover-page {
+      page-break-after: always;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 24px;
+      background: linear-gradient(135deg, #090B10 0%, #131722 50%, #0F172A 100%);
+      color: #FFFFFF;
+      border-radius: 12px;
+    }
+
+    .cover-header {
+      border-bottom: 2px solid #06B6D4;
+      padding-bottom: 20px;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid #06B6D4;
+      color: #38BDF8;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .cover-title {
+      font-size: 30pt;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #F8FAFC;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #38BDF8 50%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-subtitle {
+      font-size: 13pt;
+      color: #94A3B8;
+      font-weight: 400;
+      max-width: 620px;
+    }
+
+    .cover-body {
+      margin-top: 30px;
+    }
+
+    .cover-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .feature-card h4 {
+      color: #38BDF8;
+      font-size: 11pt;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      color: #CBD5E1;
+      font-size: 9pt;
+    }
+
+    .cover-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #94A3B8;
+    }
+
+    /* Page Headings & Typography */
+    h1 {
+      font-size: 18pt;
+      color: #0F172A;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #06B6D4;
+      page-break-after: avoid;
+    }
+
+    h2 {
+      font-size: 13pt;
+      color: #1E293B;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 11pt;
+      color: #334155;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    /* Table of Contents */
+    .toc-container {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0 30px 0;
+      page-break-after: always;
+    }
+
+    .toc-title {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #06B6D4;
+      padding-bottom: 6px;
+    }
+
+    .toc-list {
+      list-style-type: none;
+    }
+
+    .toc-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dotted #CBD5E1;
+      font-size: 10pt;
+    }
+
+    .toc-item.main {
+      font-weight: 700;
+      color: #0F172A;
+      margin-top: 8px;
+    }
+
+    .toc-item.sub {
+      padding-left: 20px;
+      color: #475569;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+
+    th {
+      background-color: #0F172A;
+      color: #FFFFFF;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    tr:nth-child(even) {
+      background-color: #F8FAFC;
+    }
+
+    /* Callout & Diagrams */
+    .callout {
+      background: #ECFEFF;
+      border-left: 4px solid #06B6D4;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 0 8px 8px 0;
+      page-break-inside: avoid;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #0891B2;
+      margin-bottom: 4px;
+      font-size: 10pt;
+    }
+
+    .diagram-box {
+      background: #090B10;
+      color: #38BDF8;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 15px 0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 8.5pt;
+      white-space: pre;
+      overflow-x: auto;
+      page-break-inside: avoid;
+      line-height: 1.4;
+      border: 1px solid #1E293B;
+    }
+
+    .diagram-caption {
+      font-size: 8.5pt;
+      color: #64748B;
+      text-align: center;
+      margin-top: -8px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    /* Code Snippets */
+    pre, code {
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 8.5pt;
+    }
+
+    pre {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      overflow-x: auto;
+      page-break-inside: avoid;
+      border: 1px solid #1E293B;
+    }
+
+    code {
+      background: #F1F5F9;
+      color: #0F172A;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* Glossary & Index */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .glossary-item {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      page-break-inside: avoid;
+    }
+
+    .glossary-term {
+      font-weight: 700;
+      color: #0891B2;
+      margin-bottom: 2px;
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .index-group {
+      background: #F8FAFC;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+      page-break-inside: avoid;
+    }
+
+    .index-letter {
+      font-weight: 800;
+      color: #0F172A;
+      font-size: 12pt;
+      border-bottom: 1px solid #CBD5E1;
+      margin-bottom: 6px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover-page">
+    <div class="cover-header">
+      <div class="cover-badge">Next.js 16 • React 19 • NVIDIA NIM OS</div>
+      <div class="cover-title">AI Travel Planner</div>
+      <div class="cover-subtitle">Complete Architecture, Data Structure, Pros & Cons, Surgical AI Refinement, and Deployment Guide</div>
+    </div>
+    
+    <div class="cover-body">
+      <div class="cover-features">
+        <div class="feature-card">
+          <h4>1. Overview & Data Contract</h4>
+          <p>"AI as a Data Contract" — strict JSON generation, zero-config guest mode, and client-first storage.</p>
+        </div>
+        <div class="feature-card">
+          <h4>2. Pros & Cons Assessment</h4>
+          <p>Balanced review of guest privacy, surgical refinement, storage caps, and API dependencies.</p>
+        </div>
+        <div class="feature-card">
+          <h4>3. File & Folder Hierarchy</h4>
+          <p>Hierarchical tree breakdown of App Router pages, server API routes, UI components, and stores.</p>
+        </div>
+        <div class="feature-card">
+          <h4>4. Data Schema Architecture</h4>
+          <p>TypeScript contract definitions (`TravelItinerary`, `DayPlan`, `Activity`, `BudgetBreakdown`).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <span>Project: AI Travel Planner</span>
+      <span>Tech Stack: Next.js 16 + Tailwind v4 + TypeScript</span>
+      <span>Version 1.0 (2026 Edition)</span>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc-container">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item main"><span>1. Application Overview & Architecture</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.1 What is AI Travel Planner?</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.2 Core Architectural Principles ("AI as a Data Contract")</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.3 Execution Flow & System Pipeline</span> <span>Page 3</span></li>
+      
+      <li class="toc-item main"><span>2. Balanced Assessment: Pros and Cons</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.1 Major Strengths & UX Highlights</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.2 Operational Limitations & System Trade-Offs</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.3 Practical Persona Decision Matrix</span> <span>Page 4</span></li>
+
+      <li class="toc-item main"><span>3. Workspace File Structure & Architecture</span> <span>Page 5</span></li>
+      <li class="toc-item sub"><span>3.1 Hierarchical File System Tree</span> <span>Page 5</span></li>
+      <li class="toc-item sub"><span>3.2 Key Directories & Source File Explanations</span> <span>Page 5</span></li>
+
+      <li class="toc-item main"><span>4. Data Structure & Schema Specification</span> <span>Page 6</span></li>
+      <li class="toc-item sub"><span>4.1 Core TravelItinerary Data Schema</span> <span>Page 6</span></li>
+      <li class="toc-item sub"><span>4.2 Activity & Budget Entity Models</span> <span>Page 6</span></li>
+
+      <li class="toc-item main"><span>5. Practical Use-Case Scenarios</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.1 Scenario 1: Initial 7-Day Tokyo Trip Generation</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.2 Scenario 2: Surgical Natural Language Refinement</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.3 Scenario 3: Weather Alert & Map Plotting Integration</span> <span>Page 7</span></li>
+
+      <li class="toc-item main"><span>6. Operational & Deployment Guide</span> <span>Page 8</span></li>
+      <li class="toc-item sub"><span>6.1 Environment Configuration & Commands</span> <span>Page 8</span></li>
+      <li class="toc-item sub"><span>6.2 Technical Glossary & Master Index</span> <span>Page 8</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: OVERVIEW -->
+  <h1>1. Application Overview & Architecture</h1>
+  
+  <h2>1.1 What is AI Travel Planner?</h2>
+  <p><strong>AI Travel Planner</strong> is an intelligent travel operating system that transforms a 9-step questionnaire into a personalized, day-by-day itinerary. Built with <strong>Next.js 16 (App Router)</strong>, <strong>React 19</strong>, <strong>TypeScript</strong>, and <strong>Tailwind CSS v4</strong>, the system generates complete travel plans with activity timelines, budget allocations, live weather forecasts, packing lists, emergency contacts, local customs, and Leaflet route maps.</p>
+
+  <div class="callout">
+    <div class="callout-title">Core Philosophy: "AI as a Data Contract"</div>
+    Instead of outputting loose markdown text, the AI generator and surgical editor conform to a single strict JSON schema (`TravelItinerary`). This ensures every trip generated is 100% structured, predictable, and losslessly editable.
+  </div>
+
+  <h2>1.2 Core Architectural Principles</h2>
+  <ul>
+    <li><strong>Surgical Refinement Engine:</strong> Natural-language commands (e.g., <em>"Add local izakayas to Night 3 and remove morning hiking"</em>) apply merge-preserving diffs to existing itineraries without regenerating unmentioned days.</li>
+    <li><strong>Zero-Configuration Guest UX:</strong> The core product operates without requiring user registration, databases, or API keys for maps and weather.</li>
+    <li><strong>Client-First Persistence:</strong> Itineraries are saved in versioned `localStorage` (`atp:itineraries:v1`) with automatic quota management.</li>
+    <li><strong>Pluggable Storage Seam:</strong> Public trip sharing defaults to a zero-config file system store (`data/shares/`) and upgrades seamlessly to Supabase cloud database storage when environment variables are set.</li>
+  </ul>
+
+  <h2>1.3 System Execution Pipeline</h2>
+  <div class="diagram-box">
+┌─────────────────┐      ┌─────────────────────────┐      ┌─────────────────────────┐
+│ Questionnaire   │ ───► │ POST /api/generate      │ ───► │ NVIDIA NIM API (GLM 5.2)│
+│ (9-Step Form)   │      │ (JSON Schema Prompt)    │      │ (Generates Strict JSON) │
+└─────────────────┘      └─────────────────────────┘      └────────────┬────────────┘
+                                                                       │
+┌─────────────────┐      ┌─────────────────────────┐                   │
+│ Rendered UI     │ ◄─── │ Zustand LocalStorage    │ ◄─────────────────┘
+│ (Itinerary/Map) │      │ (atp:itineraries:v1)    │  Validates & Parsed
+└─────────────────┘      └─────────────────────────┘
+  </div>
+  <div class="diagram-caption">Figure 1: AI Travel Planner End-to-End Execution & Data Flow Pipeline</div>
+
+  <!-- SECTION 2: PROS AND CONS -->
+  <div class="page-break"></div>
+  <h1>2. Balanced Assessment: Pros and Cons</h1>
+
+  <h2>2.1 Major Strengths</h2>
+  <ul>
+    <li><strong>Zero Configuration Guest UX:</strong> Instant usability without requiring sign-up or credit card details.</li>
+    <li><strong>Surgical Natural Language Edits:</strong> Refine trips effortlessly without losing existing daily schedules.</li>
+    <li><strong>Honest Data Guarantee:</strong> Integrates live Open-Meteo weather data; prices are represented as clear estimated ranges.</li>
+    <li><strong>Modern Developer Experience:</strong> Built with Next.js 16 Turbopack, Tailwind CSS v4 tokenized dark glassmorphism, Vitest unit tests, and Playwright E2E suites.</li>
+  </ul>
+
+  <h2>2.2 Operational Limitations & Trade-Offs</h2>
+  <ul>
+    <li><strong>Requires NVIDIA API Key for Live Generation:</strong> Live itinerary generation requires an active `NVIDIA_API_KEY` (though mock modes run for local testing).</li>
+    <li><strong>Browser Storage Quotas:</strong> Browser `localStorage` has a ~5MB storage ceiling, requiring automated pruning for heavy users.</li>
+    <li><strong>Public Share Payload Ceiling:</strong> Shared trip links enforce a 400 KB payload limit to ensure high performance and prevent system abuse.</li>
+  </ul>
+
+  <h2>2.3 Practical Persona Decision Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Persona</th>
+        <th>Primary Benefit</th>
+        <th>Main Challenge</th>
+        <th>Recommended Workflow</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Traveler / End User</strong></td>
+        <td>Instant complete trip schedule with maps & packing lists</td>
+        <td>Requires internet for live weather</td>
+        <td>Use print-optimized Travel Report for offline travel.</td>
+      </tr>
+      <tr>
+        <td><strong>Frontend Engineer</strong></td>
+        <td>Clean React 19 + Tailwind v4 component architecture</td>
+        <td>Strict TypeScript schema validation</td>
+        <td>Extend `src/types/itinerary.ts` when adding new trip properties.</td>
+      </tr>
+      <tr>
+        <td><strong>DevOps / Architect</strong></td>
+        <td>Pluggable File ↔ Supabase storage adapter seam</td>
+        <td>API rate limits on public shares</td>
+        <td>Enable Supabase service-role adapter for high traffic.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 3: FILE STRUCTURE -->
+  <div class="page-break"></div>
+  <h1>3. Workspace File Structure & Architecture</h1>
+
+  <h2>3.1 Hierarchical File System Tree</h2>
+  <div class="diagram-box">
+ai-travel-planner/
+├── src/
+│   ├── app/                            # Next.js 16 App Router pages & server routes
+│   │   ├── api/                        # Serverless backend routes
+│   │   │   ├── generate/route.ts       # Main AI generation endpoint (NVIDIA NIM)
+│   │   │   ├── refine/route.ts         # Surgical natural language editor
+│   │   │   ├── weather/route.ts        # Open-Meteo live weather proxy
+│   │   │   ├── share/route.ts          # Public trip link generator
+│   │   │   └── chat/route.ts           # AI Travel Assistant endpoint
+│   │   ├── budget/page.tsx             # Canonical budget breakdown view
+│   │   ├── itinerary/page.tsx          # Main itinerary timeline & day views
+│   │   ├── map/page.tsx                # Interactive Leaflet OpenStreetMap view
+│   │   ├── plan/page.tsx               # 9-step trip questionnaire form
+│   │   ├── profile/page.tsx            # Favorites & trip history
+│   │   ├── share/[token]/page.tsx      # Public shared trip viewer
+│   │   └── globals.css                 # Tailwind v4 glassmorphism styling tokens
+│   ├── components/                     # Modular UI components
+│   │   ├── ui/                         # Base design system (Button, Card, Badge)
+│   │   ├── itinerary/                  # Timeline cards, packing list
+│   │   ├── budget/                     # Budget breakdown & category sliders
+│   │   ├── map/                        # Leaflet map pins & popups
+│   │   ├── RefineDrawer.tsx            # Surgical AI editor drawer
+│   │   └── AIChatDrawer.tsx            # Conversational travel assistant
+│   ├── lib/                            # Utility modules & API wrappers
+│   │   ├── nvidia.ts                   # NVIDIA NIM API client wrapper
+│   │   ├── weather.ts                  # Open-Meteo fetcher & WMO code mapper
+│   │   └── storage/                    # Pluggable File ↔ Supabase storage seam
+│   └── types/                          # TypeScript contract specifications
+│       ├── itinerary.ts                # TravelItinerary main interface
+│       ├── questionnaire.ts            # QuestionnaireData form state
+│       └── weather.ts                  # Weather forecast interfaces
+├── data/
+│   └── shares/                         # Zero-config file-based share storage
+├── docs/                               # Developer documentation & screenshots
+├── public/                             # Brand mark, icons, OG card images
+├── scripts/                            # Screenshot & build automation scripts
+├── tests/                              # Vitest & Playwright test suites
+└── package.json                        # Node dependencies & npm scripts
+  </div>
+  <div class="diagram-caption">Figure 3: AI Travel Planner Directory Structure & Key Components</div>
+
+  <!-- SECTION 4: DATA STRUCTURE -->
+  <div class="page-break"></div>
+  <h1>4. Data Structure & Schema Specification</h1>
+
+  <h2>4.1 Core TravelItinerary Data Contract</h2>
+  <p>The application is governed by strict TypeScript interface definitions in <code>src/types/itinerary.ts</code>:</p>
+
+  <pre><code>export interface TravelItinerary {
+  tripSummary: TripSummary;
+  dailyItinerary: DayPlan[];
+  weatherForecast?: WeatherDay[];
+  accommodations: Accommodation[];
+  restaurants: Restaurant[];
+  budgetBreakdown: BudgetBreakdown;
+  packingChecklist: PackingCategory[];
+  transportationDetails: TransportDetail[];
+  emergencyContacts: EmergencyContact[];
+  hiddenGems: HiddenGem[];
+  localCustoms: string[];
+  travelTips: string[];
+  importantNotes: string[];
+}</code></pre>
+
+  <h2>4.2 Sub-Entity Data Models</h2>
+  
+  <h3>DayPlan & Activity Interfaces</h3>
+  <pre><code>export interface DayPlan {
+  day: number;
+  date: string;
+  title: string;
+  summary: string;
+  activities: Activity[];
+  totalCost: number;
+}
+
+export interface Activity {
+  time: string;
+  endTime: string;
+  name: string;
+  description: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  duration: string;
+  category: ActivityCategory;
+  estimatedCost: number;
+  tips: string;
+}</code></pre>
+
+  <h3>BudgetBreakdown & Accommodation Models</h3>
+  <pre><code>export interface BudgetCategory {
+  category: string;
+  estimated: number;
+  percentage: number;
+}
+
+export interface BudgetBreakdown {
+  totalEstimated: number;
+  totalBudget: number;
+  currency: string;
+  categories: BudgetCategory[];
+  savingsTips: string[];
+}</code></pre>
+
+  <!-- SECTION 5: PRACTICAL EXAMPLES -->
+  <div class="page-break"></div>
+  <h1>5. Practical Use-Case Scenarios</h1>
+
+  <h2>5.1 Scenario 1: Initial 7-Day Tokyo Trip Generation</h2>
+  <p><strong>User Input:</strong> Destination: <em>"Tokyo, Japan"</em> | Budget: <em>"$2,500"</em> | Style: <em>"Culinary & Cultural"</em>.</p>
+  <div class="callout">
+    <div class="callout-title">Generated Itinerary Output Summary</div>
+    Includes Tsukiji Outer Market breakfast visits, Senso-ji temple morning walks, Shibuya Crossing route maps, Ryokan accommodations, and 6-category budget allocations.
+  </div>
+
+  <h2>5.2 Scenario 2: Surgical Refinement Command</h2>
+  <p><strong>User Command:</strong> <em>"Add local izakayas to Day 3 evening and swap Day 4 morning to teamLab Planets."</em></p>
+  <pre><code>// System Execution:
+POST /api/refine
+Payload: { itinerary: TravelItinerary, prompt: "Add local izakayas to Day 3..." }
+Result: Days 1, 2, 5, 6, 7 remain identical. Days 3 and 4 reflect surgical updates.</code></pre>
+
+  <h2>5.3 Scenario 3: Live Weather Integration</h2>
+  <p>Open-Meteo returns live weather forecasts. If rain is detected, the UI displays weather alerts and auto-suggests indoor museum alternatives.</p>
+
+  <!-- SECTION 6: OPERATIONAL & DEPLOYMENT -->
+  <div class="page-break"></div>
+  <h1>6. Operational & Deployment Guide</h1>
+
+  <h2>6.1 Quickstart Commands</h2>
+  <pre><code># 1. Install dependencies
+npm install
+
+# 2. Configure environment
+cp .env.example .env.local
+
+# 3. Launch Turbopack development server
+npm run dev
+
+# 4. Execute test suites
+npm run test        # Vitest unit tests
+npm run test:e2e    # Playwright integration tests</code></pre>
+
+  <h2>6.2 Technical Glossary & Master Index</h2>
+  <div class="glossary-grid">
+    <div class="glossary-item">
+      <div class="glossary-term">AI Data Contract</div>
+      Strict JSON schema enforcement between AI LLM responses and UI rendering components.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Surgical Editing</div>
+      Modifying specific daily activities using natural language without altering unmentioned days.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Glassmorphism</div>
+      Modern dark-mode design system with semi-transparent card backdrops and cyan/violet glowing borders.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Storage Adapter Seam</div>
+      Pluggable interface that seamlessly toggles between local file storage and Supabase database persistence.
+    </div>
+  </div>
+
+  <div class="index-grid" style="margin-top:20px;">
+    <div class="index-group">
+      <div class="index-letter">A - L</div>
+      <p>• App Router: Sec 1.1, 3.1</p>
+      <p>• Budget Model: Sec 4.2</p>
+      <p>• Data Contract: Sec 1.1, 4.1</p>
+      <p>• Leaflet Route Maps: Sec 1.1, 3.1</p>
+    </div>
+    <div class="index-group">
+      <div class="index-letter">N - Z</div>
+      <p>• NVIDIA NIM API: Sec 1.3, 3.2</p>
+      <p>• Open-Meteo Weather: Sec 1.1, 5.3</p>
+      <p>• Surgical Refinement: Sec 1.2, 5.2</p>
+      <p>• Zustand Store: Sec 1.2, 3.1</p>
+    </div>
+  </div>
+
+</body>
+</html>

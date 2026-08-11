@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DeepSeek-R1 & Reasoning Models: Beginner-Friendly Guide</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 9pt;
+        color: #64748B;
+      }
+      @top-left {
+        content: "DeepSeek-R1 & Reasoning Models Guide";
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 8pt;
+        color: #94A3B8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #1E293B;
+      background-color: #FFFFFF;
+      line-height: 1.6;
+      font-size: 10pt;
+    }
+
+    /* Cover Page */
+    .cover-page {
+      page-break-after: always;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #1E3A8A 100%);
+      color: #FFFFFF;
+      border-radius: 12px;
+    }
+
+    .cover-header {
+      border-bottom: 2px solid #3B82F6;
+      padding-bottom: 20px;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid #3B82F6;
+      color: #60A5FA;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .cover-title {
+      font-size: 28pt;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #F8FAFC;
+      margin-bottom: 15px;
+    }
+
+    .cover-subtitle {
+      font-size: 13pt;
+      color: #94A3B8;
+      font-weight: 400;
+      max-width: 600px;
+    }
+
+    .cover-body {
+      margin-top: 40px;
+    }
+
+    .cover-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .feature-card h4 {
+      color: #38BDF8;
+      font-size: 11pt;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      color: #CBD5E1;
+      font-size: 9pt;
+    }
+
+    .cover-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #94A3B8;
+    }
+
+    /* Page Headings & Typography */
+    h1 {
+      font-size: 18pt;
+      color: #0F172A;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #2563EB;
+      page-break-after: avoid;
+    }
+
+    h2 {
+      font-size: 13pt;
+      color: #1E293B;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 11pt;
+      color: #334155;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    /* Table of Contents */
+    .toc-container {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0 30px 0;
+      page-break-after: always;
+    }
+
+    .toc-title {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #2563EB;
+      padding-bottom: 6px;
+    }
+
+    .toc-list {
+      list-style-type: none;
+    }
+
+    .toc-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dotted #CBD5E1;
+      font-size: 10pt;
+    }
+
+    .toc-item.main {
+      font-weight: 700;
+      color: #0F172A;
+      margin-top: 8px;
+    }
+
+    .toc-item.sub {
+      padding-left: 20px;
+      color: #475569;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+
+    th {
+      background-color: #0F172A;
+      color: #FFFFFF;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    tr:nth-child(even) {
+      background-color: #F8FAFC;
+    }
+
+    /* Callout & Diagrams */
+    .callout {
+      background: #EFF6FF;
+      border-left: 4px solid #2563EB;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 0 8px 8px 0;
+      page-break-inside: avoid;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #1E40AF;
+      margin-bottom: 4px;
+      font-size: 10pt;
+    }
+
+    .diagram-box {
+      background: #0F172A;
+      color: #38BDF8;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 15px 0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 8.5pt;
+      white-space: pre;
+      overflow-x: auto;
+      page-break-inside: avoid;
+      line-height: 1.4;
+    }
+
+    .diagram-caption {
+      font-size: 8.5pt;
+      color: #64748B;
+      text-align: center;
+      margin-top: -8px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    /* Code Snippets */
+    pre, code {
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 8.5pt;
+    }
+
+    pre {
+      background: #1E293B;
+      color: #F8FAFC;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      overflow-x: auto;
+      page-break-inside: avoid;
+    }
+
+    code {
+      background: #F1F5F9;
+      color: #0F172A;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* Glossary & Index */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .glossary-item {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      page-break-inside: avoid;
+    }
+
+    .glossary-term {
+      font-weight: 700;
+      color: #2563EB;
+      margin-bottom: 2px;
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .index-group {
+      background: #F8FAFC;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+      page-break-inside: avoid;
+    }
+
+    .index-letter {
+      font-weight: 800;
+      color: #0F172A;
+      font-size: 12pt;
+      border-bottom: 1px solid #CBD5E1;
+      margin-bottom: 6px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover-page">
+    <div class="cover-header">
+      <div class="cover-badge">DeepSeek-R1 Architecture Series</div>
+      <div class="cover-title">DeepSeek-R1 & Reasoning Models</div>
+      <div class="cover-subtitle">A Detailed, Beginner-Friendly Guide to Chain-of-Thought AI, Model Distillation, File Structures, and Production Deployment</div>
+    </div>
+    
+    <div class="cover-body">
+      <div class="cover-features">
+        <div class="feature-card">
+          <h4>1. Model Overview</h4>
+          <p>Key concepts, Chain-of-Thought (CoT), GRPO, and reinforcement learning explained simply.</p>
+        </div>
+        <div class="feature-card">
+          <h4>2. Pros & Cons</h4>
+          <p>Balanced assessment of reasoning speed, benchmark performance, and latency trade-offs.</p>
+        </div>
+        <div class="feature-card">
+          <h4>3. File Hierarchy</h4>
+          <p>Complete structural diagram of model weights, SafeTensors shards, tokenizers, and configs.</p>
+        </div>
+        <div class="feature-card">
+          <h4>4. Deployment Guide</h4>
+          <p>Hardware requirements matrix, Ollama quickstart, vLLM serving, and OOM troubleshooting.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <span>Author: Antigravity AI Engineering</span>
+      <span>Target Audience: Developers & Non-Experts</span>
+      <span>Version 1.0 (2026 Edition)</span>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc-container">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item main"><span>1. Model Overview & Key Concepts</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.1 What is DeepSeek-R1?</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.2 Core Concepts Explained Simply</span> <span>Page 3</span></li>
+      <li class="toc-item sub"><span>1.3 Inference & Self-Correction Pipeline</span> <span>Page 3</span></li>
+      
+      <li class="toc-item main"><span>2. Balanced Assessment: Pros and Cons</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.1 Key Architectural Strengths</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.2 Operational Limitations & Latency Trade-offs</span> <span>Page 4</span></li>
+      <li class="toc-item sub"><span>2.3 Practical Persona Decision Matrix</span> <span>Page 4</span></li>
+
+      <li class="toc-item main"><span>3. File Structure & Repository Hierarchy</span> <span>Page 5</span></li>
+      <li class="toc-item sub"><span>3.1 Directory Tree Diagram</span> <span>Page 5</span></li>
+      <li class="toc-item sub"><span>3.2 Major Files & Configuration Parameters</span> <span>Page 5</span></li>
+
+      <li class="toc-item main"><span>4. Practical Use-Case Scenarios</span> <span>Page 6</span></li>
+      <li class="toc-item sub"><span>4.1 Scenario 1: Multi-Step Mathematical Logic</span> <span>Page 6</span></li>
+      <li class="toc-item sub"><span>4.2 Scenario 2: Python Code Refactoring & Debugging</span> <span>Page 6</span></li>
+      <li class="toc-item sub"><span>4.3 Scenario 3: Enterprise JSON Payload Extraction</span> <span>Page 6</span></li>
+
+      <li class="toc-item main"><span>5. Deployment Considerations & Troubleshooting</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.1 Hardware Prerequisites Matrix (VRAM & Storage)</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.2 Environment Setup (Ollama & vLLM)</span> <span>Page 7</span></li>
+      <li class="toc-item sub"><span>5.3 Troubleshooting Guide (OOM, Loops, Thinking Tags)</span> <span>Page 7</span></li>
+
+      <li class="toc-item main"><span>6. Non-Expert Clarity: Glossary & Master Index</span> <span>Page 8</span></li>
+      <li class="toc-item sub"><span>6.1 Plain-Language Glossary</span> <span>Page 8</span></li>
+      <li class="toc-item sub"><span>6.2 Alphabetical Index</span> <span>Page 8</span></li>
+
+      <li class="toc-item main"><span>7. Document Formatting Specifications</span> <span>Page 8</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: MODEL OVERVIEW -->
+  <h1>1. Model Overview</h1>
+  
+  <h2>1.1 What is DeepSeek-R1?</h2>
+  <p>DeepSeek-R1 is a state-of-the-art open-weights <strong>reasoning language model</strong> developed by DeepSeek. Unlike standard Large Language Models (LLMs) that respond immediately token-by-token based on Next-Word Prediction, DeepSeek-R1 pauses to generate an internal "thinking process" before producing its final answer.</p>
+
+  <div class="callout">
+    <div class="callout-title">Lightbulb Analogy</div>
+    Standard LLMs act like fast quiz-show contestants who blurt out answers immediately. Reasoning models like DeepSeek-R1 act like grandmaster chess players who pause, simulate five moves ahead in their head, check for flaws, and then make their move.
+  </div>
+
+  <h2>1.2 Core Concepts Explained Simply</h2>
+  <ul>
+    <li><strong>Chain-of-Thought (CoT):</strong> The internal scratchpad generated between <code>&lt;think&gt;</code> and <code>&lt;/think&gt;</code> tags. It records the AI's step-by-step logic, self-corrections, and verification loops.</li>
+    <li><strong>Pure Reinforcement Learning (RL):</strong> DeepSeek-R1-Zero proved that a neural network can learn advanced reasoning <em>purely</em> through rewards (e.g. points for correct math solutions) without requiring expensive human-written tutorial data.</li>
+    <li><strong>GRPO (Group Relative Policy Optimization):</strong> An innovative algorithm that eliminates the massive secondary "Critic" neural network during training, reducing GPU memory requirements by more than 50%.</li>
+    <li><strong>Model Distillation:</strong> Compressing the reasoning capabilities learned by the flagship 671B parameter model into compact models (1.5B, 7B, 14B, 32B, 70B) that run smoothly on consumer hardware.</li>
+  </ul>
+
+  <h2>1.3 Inference & Self-Correction Pipeline</h2>
+  <div class="diagram-box">
+┌─────────────────┐      ┌─────────────────────────────────────────┐      ┌─────────────────┐
+│  User Prompt    │ ───► │  `<think>` Internal Scratchpad          │ ───► │ `</think>`       │
+│  (Math / Bug)   │      │  - Evaluates initial hypothesis         │      │  Final Answer   │
+└─────────────────┘      │  - Detects error & backtracks           │      │  (Clean Output) │
+                         │  - Verifies math logic & edge cases     │      └─────────────────┘
+                         └─────────────────────────────────────────┘
+  </div>
+  <div class="diagram-caption">Figure 1: DeepSeek-R1 Reasoning & Execution Pipeline Diagram</div>
+
+  <!-- SECTION 2: PROS AND CONS -->
+  <div class="page-break"></div>
+  <h1>2. Balanced Assessment: Pros and Cons</h1>
+
+  <h2>2.1 Architectural Strengths</h2>
+  <ul>
+    <li><strong>Open Weights & Sovereignty:</strong> Complete access to model weights allows local hosting, strict data privacy, and custom fine-tuning.</li>
+    <li><strong>Unmatched Reasoning Accuracy:</strong> Delivers benchmark scores rivaling top proprietary models (such as OpenAI o1) in competitive math (AIME) and programming (Codeforces).</li>
+    <li><strong>Full Logic Transparency:</strong> Developers can inspect the exact reasoning steps inside <code>&lt;think&gt;</code> logs to understand <em>why</em> a decision was reached.</li>
+    <li><strong>High Efficiency Distillations:</strong> The 7B and 14B distilled models make advanced reasoning available on single consumer GPUs.</li>
+  </ul>
+
+  <h2>2.2 Operational Limitations & Trade-Offs</h2>
+  <ul>
+    <li><strong>Increased Latency:</strong> The model generates hundreds or thousands of reasoning tokens before outputting its first real answer word, leading to higher initial latency.</li>
+    <li><strong>Over-Reasoning Simple Queries:</strong> May spend 20 seconds analyzing straightforward questions (e.g., "What color is the sky?").</li>
+    <li><strong>System Prompt Sensitivity:</strong> Complex system prompts can interfere with the model's natural reasoning template. Simple, unadorned prompts yield the best performance.</li>
+  </ul>
+
+  <h2>2.3 Practical Persona Decision Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Persona</th>
+        <th>Primary Benefit</th>
+        <th>Main Challenge</th>
+        <th>Recommended Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Enterprise App Developer</strong></td>
+        <td>Strict local privacy & zero API fees</td>
+        <td>Higher response latency</td>
+        <td>Strip <code>&lt;think&gt;</code> tags and use 14B/32B distilled models.</td>
+      </tr>
+      <tr>
+        <td><strong>Data Scientist / Auditor</strong></td>
+        <td>Fully inspectable Chain-of-Thought</td>
+        <td>System prompt sensitivity</td>
+        <td>Pass raw user queries without heavy system prompt overrides.</td>
+      </tr>
+      <tr>
+        <td><strong>Local AI Hobbyist</strong></td>
+        <td>Runs on laptops (Mac M1/M2/M3 or PC)</td>
+        <td>High RAM/VRAM usage</td>
+        <td>Deploy GGUF Q4_K_M quantized builds via Ollama.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 3: FILE STRUCTURE -->
+  <div class="page-break"></div>
+  <h1>3. File Structure & Repository Hierarchy</h1>
+
+  <h2>3.1 Directory Tree Diagram</h2>
+  <div class="diagram-box">
+deepseek-r1-repository/
+├── config.json                        # Hyperparameters (layers, heads, MoE layout)
+├── generation_config.json             # Default inference & sampling settings
+├── model.safetensors.index.json       # Weight index mapping tensors to files
+├── model-00001-of-00016.safetensors   # Binary weight shard 1 (SafeTensors format)
+├── model-00002-of-00016.safetensors   # Binary weight shard 2
+├── ...
+├── tokenizer.json                     # Complete vocabulary and Byte-Pair Encoding rules
+├── tokenizer_config.json              # Special token IDs (<think>, </think>, <|endoftext|>)
+├── Modelfile                          # Container setup for local deployment (Ollama)
+└── deploy/
+    ├── vllm_server.py                 # Production high-throughput API server
+    └── prompt_template.jinja          # Chat formatting engine
+  </div>
+  <div class="diagram-caption">Figure 3: DeepSeek-R1 Repository & Model Weight Layout</div>
+
+  <h2>3.2 Key Directories & File Descriptions</h2>
+  <ul>
+    <li><strong><code>config.json</code>:</strong> Specifies neural network architecture parameters: <code>num_hidden_layers</code>, <code>hidden_size</code>, <code>num_attention_heads</code>, and Mixture-of-Experts (MoE) active expert routing settings.</li>
+    <li><strong><code>model-*.safetensors</code>:</strong> High-performance binary weight shards stored in SafeTensors format, eliminating code execution security hazards inherent in legacy PyTorch pickle files.</li>
+    <li><strong><code>tokenizer_config.json</code>:</strong> Configures string-to-token parsing, explicitly binding critical structural tags like <code>&lt;think&gt;</code> (ID 151648) and <code>&lt;/think&gt;</code> (ID 151649).</li>
+    <li><strong><code>Modelfile</code>:</strong> Build recipe for Ollama specifying RAM allocation, context length limits (<code>num_ctx 16384</code>), and stop sequences.</li>
+  </ul>
+
+  <!-- SECTION 4: PRACTICAL EXAMPLES -->
+  <div class="page-break"></div>
+  <h1>4. Practical Use-Case Scenarios</h1>
+
+  <h2>4.1 Scenario 1: Multi-Step Mathematical Logic</h2>
+  <p><strong>Input Prompt:</strong> "A pool is filled by Pipe A in 3 hours and drained by Pipe B in 5 hours. How long does it take to fill the pool if both pipes are open?"</p>
+  <div class="callout">
+    <div class="callout-title">Model Internal Monologue (&lt;think&gt;)</div>
+    Pipe A rate = +1/3 pool/hr.<br>
+    Pipe B rate = -1/5 pool/hr.<br>
+    Combined rate = 1/3 - 1/5 = (5 - 3) / 15 = 2/15 pool/hr.<br>
+    Time required = 1 / (2/15) = 15/2 = 7.5 hours.<br>
+    Verification: In 7.5h, Pipe A adds 7.5/3 = 2.5 pools. Pipe B drains 7.5/5 = 1.5 pools. Net = 1.0 pool. Correct!
+  </div>
+  <p><strong>Final Output:</strong> "It will take <strong>7.5 hours</strong> (7 hours and 30 minutes) to fill the pool completely."</p>
+
+  <h2>4.2 Scenario 2: Python Code Refactoring & Bug Fixing</h2>
+  <p><strong>Input Prompt:</strong> "Fix the bug in this function: <code>def get_ratio(a, b): return a / b</code>"</p>
+  <pre><code># Model Output:
+def get_ratio(a: float, b: float) -> float | None:
+    """Calculates ratio safely handling zero division."""
+    if b == 0:
+        return None
+    return a / b</code></pre>
+
+  <h2>4.3 Scenario 3: Structured API JSON Payload Generation</h2>
+  <p><strong>Input Prompt:</strong> "Extract flight detail: Flight AA100 from JFK to LHR on Nov 20 departing 18:45."</p>
+  <pre><code>{
+  "airline": "American Airlines",
+  "flight_number": "AA100",
+  "origin": "JFK",
+  "destination": "LHR",
+  "departure_date": "2026-11-20",
+  "departure_time": "18:45"
+}</code></pre>
+
+  <!-- SECTION 5: DEPLOYMENT CONSIDERATIONS -->
+  <div class="page-break"></div>
+  <h1>5. Deployment Considerations & Troubleshooting</h1>
+
+  <h2>5.1 Hardware Prerequisites Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model Variant</th>
+        <th>Parameters</th>
+        <th>Min VRAM (Q4 Quant)</th>
+        <th>Recommended Hardware</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Distill 1.5B</strong></td>
+        <td>1.5 Billion</td>
+        <td>2 GB</td>
+        <td>GTX 1650 / Apple M1 (8GB RAM)</td>
+      </tr>
+      <tr>
+        <td><strong>Distill 7B</strong></td>
+        <td>7 Billion</td>
+        <td>6 GB</td>
+        <td>RTX 3060 / Apple M1 Pro (16GB RAM)</td>
+      </tr>
+      <tr>
+        <td><strong>Distill 14B</strong></td>
+        <td>14 Billion</td>
+        <td>10 GB</td>
+        <td>RTX 4070 / Apple M2 Max (16GB RAM)</td>
+      </tr>
+      <tr>
+        <td><strong>Distill 32B</strong></td>
+        <td>32 Billion</td>
+        <td>20 GB</td>
+        <td>RTX 4090 / RTX A5000 (32GB VRAM)</td>
+      </tr>
+      <tr>
+        <td><strong>Distill 70B</strong></td>
+        <td>70 Billion</td>
+        <td>42 GB</td>
+        <td>2x RTX 3090 / A100 (40GB VRAM)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5.2 Environment Setup Guide</h2>
+  <pre><code># Method A: Instant Local Setup via Ollama
+ollama run deepseek-r1:14b
+
+# Method B: High-Throughput Enterprise API Setup via vLLM
+vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-14B \
+  --tensor-parallel-size 1 \
+  --max-model-len 16384 \
+  --port 8000</code></pre>
+
+  <h2>5.3 Basic Troubleshooting Checklist</h2>
+  <ul>
+    <li><strong>CUDA Out of Memory (OOM):</strong> Switch to GGUF Q4_K_M quantization or lower the context window (<code>--max-model-len 8192</code>).</li>
+    <li><strong>Infinite Reasoning Loop:</strong> Ensure the chat template retains the explicit <code>&lt;/think&gt;</code> stop token sequence.</li>
+    <li><strong>Stripping Thinking Logs for UI:</strong> Use regular expressions to clean responses before presenting to non-technical users:
+    <code>re.sub(r'&lt;think&gt;.*?&lt;/think&gt;', '', output, flags=re.DOTALL)</code></li>
+  </ul>
+
+  <!-- SECTION 6 & 7: GLOSSARY, INDEX & FORMATTING -->
+  <div class="page-break"></div>
+  <h1>6. Non-Expert Clarity: Glossary & Master Index</h1>
+
+  <h2>6.1 Plain-Language Technical Glossary</h2>
+  <div class="glossary-grid">
+    <div class="glossary-item">
+      <div class="glossary-term">Chain-of-Thought (CoT)</div>
+      The step-by-step reasoning tokens generated by an AI before it produces its final visible output.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Distillation</div>
+      A technique for transferring knowledge and reasoning patterns from a massive AI model into a smaller, faster model.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">GRPO (Group Relative Policy Optimization)</div>
+      An efficient reinforcement learning algorithm that evaluates groups of AI answers without needing a second memory-heavy critic network.
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Quantization</div>
+      Reducing the numerical precision of neural network weights (e.g. from 16-bit to 4-bit) to save memory while preserving accuracy.
+    </div>
+  </div>
+
+  <h2>6.2 Master Index</h2>
+  <div class="index-grid">
+    <div class="index-group">
+      <div class="index-letter">C - G</div>
+      <p>• Chain-of-Thought: Sec 1.2, 4.1</p>
+      <p>• Distillation: Sec 1.2, 5.1</p>
+      <p>• GRPO Algorithm: Sec 1.2</p>
+      <p>• GGUF Quantization: Sec 2.3, 5.3</p>
+    </div>
+    <div class="index-group">
+      <div class="index-letter">H - V</div>
+      <p>• Hardware Prerequisites: Sec 5.1</p>
+      <p>• Ollama Deployment: Sec 5.2</p>
+      <p>• SafeTensors Format: Sec 3.2</p>
+      <p>• vLLM Engine Serving: Sec 5.2</p>
+    </div>
+  </div>
+
+  <h1 style="margin-top: 30px;">7. Formatting & Page Layout Plan</h1>
+  <p>This document is structured using standard <strong>A4 dimensions</strong> with 15-20mm margins, modern typography scales (System Sans-Serif / Inter), Deep Navy (<code>#0F172A</code>) headers, Electric Blue (<code>#2563EB</code>) accents, and dynamic CSS counter pagination.</p>
+
+</body>
+</html>

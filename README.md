@@ -79,27 +79,6 @@ Also captured: [home on mobile](docs/screenshots/home-mobile.png) and the [1200�
 
 ---
 
-## 🧪 Try It (Demo Flow)
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) — **no environment variables needed** to try the product:
-
-1. **Home** — browse the hero, quick actions, and trending destinations, then start planning.
-2. **Questionnaire** — 9 steps: trip details, travelers, budget, transportation, accommodation, food, interests, travel style, review.
-3. **Generate** — the app calls the LLM (requires `NVIDIA_API_KEY`) and renders the itinerary with live weather, route map, and packing list.
-4. **Refine** — ask the AI assistant or editor to change anything ("More nightlife", "Remove hiking").
-5. **Budget planner** — see the category breakdown and savings tips; tune numbers with instant fallbacks.
-6. **Travel report** — print-optimized summary, ready for PDF.
-7. **Share** — create a revocable public link (view/edit modes) with a QR code.
-8. **Profile** — favorites, history, and saved trips — all in guest mode, all on-device.
-
-> No `NVIDIA_API_KEY`? The questionnaire, planner, and all UI flows still run — generation itself fails fast with a clear message, and the entire test suite runs against mocked AI responses.
-
----
 
 ## 🛠️ Tech Stack
 
@@ -149,46 +128,6 @@ Edit flow: command + full itinerary → surgical prompt → LLM → merge-preser
 
 ---
 
-## 🎨 Brand & Design System
-
-- **Compass mark** — the brand identity is an SVG compass ([`src/app/icon.svg`](src/app/icon.svg) / [`public/brand-mark.svg`](public/brand-mark.svg)) on a dark `#090B10` tile with a cyan→violet gradient ring.
-- **Tokens** — CSS custom properties drive every surface: `--color-bg`, `--color-primary`/`--color-secondary`, radius/glow tokens, and `glass-card-static` for consistent depth.
-- **Iconography** — full set: `favicon.ico` (generated), `apple-icon.png`, and a 1200×630 Open Graph card (`scripts/brand/og-card.html` → `public/og-card.png`).
-- **Motion language** — shared `lib/motion.ts` variants (`fadeUp`, `stagger`) keep transitions consistent across pages.
-
----
-
-## 🔧 Installation
-
-```bash
-# 1. Clone and install
-git clone https://github.com/<your-username>/ai-travel-planner.git
-cd ai-travel-planner
-npm install
-
-# 2. Configure environment (see below)
-cp .env.example .env.local
-
-# 3. Run (Turbopack)
-npm run dev
-```
-
----
-
-## 🔐 Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `NVIDIA_API_KEY` | **Yes** (runtime) | API key for the NVIDIA chat completions endpoint |
-| `NEXT_PUBLIC_APP_URL` | Optional | Public origin for share/auth redirect URLs |
-| `NEXT_PUBLIC_SUPABASE_URL` | Optional | Supabase project URL (enables auth + cloud) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional | Supabase anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Optional | Server-only key for the share store adapter |
-| `MONGODB_URI` | Optional | Reserved for future server persistence |
-
-> ⚠️ The app **fails fast** if `NVIDIA_API_KEY` is missing at generation time — it is never hardcoded in source.
-
----
 
 ## 🧑‍💻 Development Guide
 
@@ -284,23 +223,6 @@ scripts/brand/                 # OG card HTML + favicon builder
 
 ---
 
-## 🗺️ Maps
-
-- **Leaflet + OpenStreetMap** tiles, loaded client-side only (`ssr: false`) to keep bundles lean.
-- Custom primitives: glass overlay, gradient route polylines, glowing category markers, live "you are here" pulse.
-- The itinerary map plots every activity, accommodation, restaurant, and hidden gem that carries valid coordinates; anchors are validated with `Number.isFinite` before rendering.
-- **Honesty rule:** no coordinates → no map section. A map is never fabricated.
-
----
-
-## 🌤️ Weather
-
-- **Open-Meteo** — free, keyless, no rate-limit drama.
-- Server-side proxy (`/api/weather`) validates lat/lon (|lat| ≤ 90, |lon| ≤ 180), clamps forecast length to 16 days, and maps WMO codes into the app's condition vocabulary.
-- Weather anchor = first itinerary activity with real coordinates; **no coordinates → no weather** (never fabricated).
-- Derived server-side: daily rain probability, wind/humidity, and travel advisories.
-
----
 
 ## 🛡️ Production Readiness
 
@@ -311,59 +233,6 @@ The app ships hardened out of the box — see [PRODUCTION_READINESS.md](PRODUCTI
 - **Share security** — 48-hex tokens, SHA-256-hashed revoke keys, per-IP throttling.
 - **CSP & headers** — strict security headers with no `dangerouslySetInnerHTML` anywhere.
 - **Storage safety** — versioned stores with quota-budgeted pruning; `/data` is gitignored.
-
----
-
-## 🚀 Deployment
-
-**Vercel (recommended)**
-
-```bash
-vercel
-vercel env add NVIDIA_API_KEY   # production
-vercel env add NEXT_PUBLIC_APP_URL
-vercel --prod
-```
-
-1. Add the environment variables (see above).
-2. *(Recommended)* Configure Supabase and run `supabase/schema.sql` — this activates auth and moves share persistence to `shared_trips` (RLS-protected). Without it, shares use the local file store, which is **ephemeral** on serverless instances.
-3. The itinerary store lives in the user's browser — no database is required to run the core product.
-
-**Docker (optional)**
-
-```dockerfile
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY . .
-RUN npm ci && npm run build
-
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/node_modules ./node_modules
-EXPOSE 3000
-CMD ["npm", "run", "start"]
-```
-
-> Note for self-hosting: keep `data/shares/` on persistent storage, or configure Supabase.
-
----
-
-## 🚧 Roadmap
-
-- **Server persistence** — user accounts with cloud-synced trips (Supabase schema v2 already reserves `expenses`, `chat_history`, `saved_places`)
-- **Runtime AI-output validation** — compile the shared schema into a zod validator (zod is already a dependency)
-- **Real voice assistant** — Web Speech API transcription replacing the current placeholder
-- **PWA** — offline itinerary access, installability, push weather alerts
-- **Live map overlays** — real traffic/weather layers on the itinerary map
-- **Cached AI/weather responses** — server-side caching for shared itineraries
-
----
-
-## 📄 License
-
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
 
 ---
 

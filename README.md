@@ -245,5 +245,5 @@ Contributions welcome — open an issue or PR.
 ---
 
 <div align="center">
-  Made with ☕ and a strict `tsconfig` · Star it if you'd travel with it ✈️
+  
 </div>

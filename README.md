@@ -521,7 +521,6 @@ Contributions and feedback are welcome through GitHub issues and pull requests.
 
 ### Built by Vashudev Sharma
 
-Made with ☕, TypeScript, and a lot of iteration.
 
 [GitHub](https://github.com/sharma9655v) ·
 [LinkedIn](https://www.linkedin.com/in/vashudev-sharma-bb094a398/)

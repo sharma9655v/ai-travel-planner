@@ -28,10 +28,22 @@ Built on the Next.js App Router with a strict TypeScript core, the app treats AI
 
 - **AI as a data contract** — one shared itinerary schema drives generation, editing, validation, and rendering.
 - **Surgical editing** — natural-language commands (`"More nightlife"`, `"Remove hiking"`) apply precise, lossless edits to an existing trip.
-- **Honest by design** — prices are always approximate ranges, weather is never fabricated, and questionnaire data never leaves the browser.
-- **Guest-first UX** — the entire core product runs with **zero configuration**: no sign-up, no database, no API keys for maps or weather.
+- **Honest by design** — prices are approximate ranges, weather is never fabricated, and private user data is not used in cache keys.
+- **Guest-first UX** — users can explore the core experience without creating an account. AI generation uses a server-side AI provider, while maps and weather remain keyless.
+---
+
+## 💡 Why I Built It
+
+Travel planning often means switching between multiple tools for destinations, activities, weather, routes, restaurants, budgets, and trip organization.
+
+I built **AI Travel Planner** to bring these pieces together into one experience.
+
+The project evolved from an AI itinerary generator into a complete travel-planning platform with structured AI generation, itinerary refinement, maps, weather, POI discovery, budgeting, sharing, authentication, caching, and performance optimization.
+
+A major focus during development was making AI generation **fast, reliable, and structured**, rather than simply generating long responses.
 
 ---
+
 
 ## ✨ Features
 
@@ -91,7 +103,7 @@ Also captured: [home on mobile](docs/screenshots/home-mobile.png) and the [1200�
 
 **AI & Data**
 
-- **NVIDIA NIM** (`integrate.api.nvidia.com`) — LLM chat completions via GLM 5.2 (generation, editing, chat)
+- - **NVIDIA NIM** (`integrate.api.nvidia.com`) — configurable LLM provider for itinerary generation, refinement, and chat
 - **Open-Meteo** — free, keyless live weather
 - **Leaflet + OpenStreetMap** — interactive route maps
 - **Supabase** *(optional)* — auth + cloud persistence (service-role adapter for shares)
@@ -99,6 +111,27 @@ Also captured: [home on mobile](docs/screenshots/home-mobile.png) and the [1200�
 **Dev**
 
 - ESLint (flat config) · Vitest (unit/integration) · Playwright (e2e + screenshots + perf) · `next/font` (Inter) · `lucide-react`
+
+---
+
+## 👨‍💻 My Role
+
+I designed and developed the AI Travel Planner as an independent project.
+
+| Area | My Work |
+|---|---|
+| Product | Product concept and feature planning |
+| UI/UX | Interface, design system, responsive experience |
+| Frontend | Next.js, React, TypeScript |
+| AI | Prompt design, structured generation, validation |
+| Backend | API routes and server-side integrations |
+| Maps | Leaflet + OpenStreetMap |
+| Weather | Open-Meteo integration |
+| Data | POI discovery, caching, request deduplication |
+| Authentication | Supabase + OAuth architecture |
+| Testing | Vitest + Playwright |
+| Performance | AI latency and request optimization |
+| Deployment | Production deployment architecture |
 
 ---
 
@@ -127,7 +160,30 @@ Edit flow: command + full itinerary → surgical prompt → LLM → merge-preser
 ```
 
 ---
+## ⚡ Performance
 
+Performance optimization was a major part of the development process.
+
+The initial reasoning-heavy model was replaced for fast itinerary generation after live benchmarking showed excessive latency.
+
+### Measured Model Comparison
+
+| Model | Generation Time | Failure Rate |
+|---|---:|---:|
+| NVIDIA Nemotron 3 Nano 30B A3B | 53–124s | 22% |
+| Llama 3.1 8B Instruct | 6.8–18.6s | 0% |
+
+### Latest Benchmark
+
+- **Average generation:** 10.83s
+- **Median:** 8.96s
+- **Minimum:** 6.80s
+- **Maximum:** 18.57s
+- **Failures:** 0/5
+
+The application also uses parallel travel-data requests, POI caching, in-flight request deduplication, and background enrichment to prioritize the first usable itinerary.
+
+---
 
 ## 🧑‍💻 Development Guide
 
@@ -146,7 +202,7 @@ npm run screenshots     # regenerate docs/screenshots/*.png + brand icons
 
 **Testing**
 
-- **Vitest** — 85 tests covering AI parsing, budget normalization, weather mapping, share-store integrity, and rate limiting.
+- - **Vitest** — 155 tests covering AI parsing, itinerary normalization, budget logic, weather mapping, caching, sharing, and rate limiting.
 - **Playwright e2e** — 8 critical flows (wizard → generate → refine → weather → persistence → share → revoke) against a seeded fixture (`tests/fixtures.ts`).
 - **Screenshot pipeline** — `screenshots/portfolio-shots.spec.ts` drives the real UI (including the true AI loading flow through the questionnaire) and regenerates every image in this README.
 - **Perf suite** — `perf/route-bytes.spec.ts` enforces route-level bundle budgets.
@@ -206,23 +262,33 @@ scripts/brand/                 # OG card HTML + favicon builder
 
 ## 🤖 AI Models
 
-**Endpoint:** NVIDIA NIM — `POST https://integrate.api.nvidia.com/v1/chat/completions`
+**Provider:** NVIDIA NIM  
+**Endpoint:** `https://integrate.api.nvidia.com/v1/chat/completions`
 
-| Flow | Model | Max tokens | Config |
-|---|---|---|---|
-| Generation | `z-ai/glm-5.2` | 16,384 | temp 1.0 · top-p 1.0 · seed 42 |
-| Surgical edit | `z-ai/glm-5.2` | 8,192 | temp 0.7 · top-p 0.9 · seed 7 |
-| Chat assistant | `z-ai/glm-5.2` | 512 | temp 0.8 · top-p 0.9 |
+| Flow | Model | Purpose |
+|---|---|---|
+| Initial generation | `meta/llama-3.1-8b-instruct` | Fast itinerary generation |
+| Itinerary refinement | `meta/llama-3.1-8b-instruct` | Modify existing itineraries |
+| Travel assistant | `meta/llama-3.1-8b-instruct` | Travel questions and assistance |
 
-**Prompt engineering highlights**
+The AI model is configured through environment variables rather than hardcoded into the application.
 
-- A single **shared JSON schema** (`lib/ai/prompt.ts`) is embedded in both the generator and editor system prompts — the two can never drift apart.
-- The editor prompt mandates **verbatim copying of untouched sections**; a merge-preserving diff restores anything the model drops or malforms.
-- **Content policy:** no booking links, no precise-looking prices, JSON-only output — model responses are parsed with a resilient brace-matching extractor.
-- The provider seam (`lib/ai/nvidia.ts`) means swapping the model is a one-line change.
+### AI Pipeline
 
----
-
+```text
+Questionnaire
+     ↓
+Travel context
+     ↓
+Llama 3.1 8B
+     ↓
+JSON normalization
+     ↓
+Schema validation
+     ↓
+Itinerary
+     ↓
+Render
 
 ## 🛡️ Production Readiness
 
@@ -236,14 +302,32 @@ The app ships hardened out of the box — see [PRODUCTION_READINESS.md](PRODUCTI
 
 ---
 
-## 👥 Contributors
+## 👨‍💻 Creator
 
-- **You** — *initials / role* — [GitHub](https://github.com/sharma9655v) · [LinkedIn](https://www.linkedin.com/in/vashudev-sharma-bb094a398/)
+### Vashudev Sharma
 
-Contributions welcome — open an issue or PR.
+**AI/ML • Full-Stack Development • UI/UX**
+
+AI Travel Planner is an independent project designed and developed by **Vashudev Sharma**.
+
+The project covers the product concept, UI/UX, frontend architecture, AI integration, itinerary generation, validation, maps, weather, caching, testing, and deployment architecture.
+
+- **GitHub:** https://github.com/sharma9655v
+- **LinkedIn:** https://www.linkedin.com/in/vashudev-sharma-bb094a398/
+
+> Built from the ground up with a focus on practical AI, structured generation, performance, and a polished travel experience.
+
+Contributions and feedback are welcome through GitHub issues and pull requests.
 
 ---
 
 <div align="center">
-  
+
+### Built by Vashudev Sharma
+
+Made with ☕, TypeScript, and a lot of iteration.
+
+[GitHub](https://github.com/sharma9655v) ·
+[LinkedIn](https://www.linkedin.com/in/vashudev-sharma-bb094a398/)
+
 </div>

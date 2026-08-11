@@ -437,7 +437,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 ## 👥 Contributors
 
-- **You** — *initials / role* — [GitHub](https://github.com/your-username) · [LinkedIn](https://linkedin.com/in/your-profile)
+- **You** — *initials / role* — [GitHub](https://github.com/sharma9655v) · [LinkedIn](https://www.linkedin.com/in/vashudev-sharma-bb094a398/)
 
 Contributions welcome — open an issue or PR.
 

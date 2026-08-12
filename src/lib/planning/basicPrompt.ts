@@ -21,14 +21,14 @@ export const BASIC_ITINERARY_SCHEMA = `{
           "time": "HH:MM",
           "endTime": "HH:MM",
           "name": "string",
-          "description": "string (1-2 sentences)",
-          "location": "string",
+          "description": "string (0-1 short sentence, max 12 words, concise and factual)",
+          "location": "string (place name only, max 4 words, NEVER include coordinates)",
           "latitude": 0,
           "longitude": 0,
           "duration": "string",
           "category": "sightseeing | food | transport | accommodation | adventure | shopping | relaxation | culture | nightlife | wellness",
           "estimatedCost": 0,
-          "tips": "string"
+          "tips": "string (optional; if present max 6 words, short actionable phrase)"
         }
       ]
     }
@@ -55,6 +55,10 @@ CRITICAL OUTPUT RULES:
 - When the context lists real places, prefer their names and coordinates when they fit the day.
 - ALL numeric fields must be numbers (use 0 for unknown costs).
 - 3-5 travel tips max.
+- KEEP OUTPUT TEXT MINIMAL to fit the token budget:
+  - description: exactly 0-1 short sentence, maximum 12 words, concise and factual (e.g. "Historic temple known for traditional architecture."). Never write multi-sentence explanations.
+  - location: place name only, maximum 4 words. NEVER include coordinates inside location — latitude/longitude live exclusively in the numeric fields (e.g. "Rạp Phim Bạch Mai", not "Rạp Phim Bạch Mai (20.9981, 105.8504)").
+  - tips: OPTIONAL. If provided, maximum 6 words as a short actionable phrase (e.g. "Book tickets early", "Carry water", "Reserve ahead"). Omit the field entirely when there is nothing useful to add. Never write full-sentence tips.
 
 JSON SCHEMA (follow exactly):
 
